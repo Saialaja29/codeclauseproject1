@@ -1,1 +1,87 @@
 
+print(busiest_places)
+# A tibble: 8 × 6
+  Movie.ID Place.ID Place.Name        Dialogue_Lines Chapters Place_Rank
+     <int>    <int> <chr>                      <int>    <int>      <int>
+1        1       36 Great Hall                   100        8          1
+2        2        8 4 Privet Drive                96        3          1
+3        3       40 Hagrid's Hut                 154        6          1
+4        4       36 Great Hall                   126        7          1
+5        5       70 Ministry of Magic            233        6          1
+6        6       49 Potions Classroom            144        4          1
+7        7       68 Forest of Dean               179        5          1
+8        8       66 Viaduct Courtyard            102        9          1
+> 
+> 
+> # ============================================================
+> # ADD MOVIE NAMES IF AVAILABLE
+> # ============================================================
+> 
+> print(names(movies))
+[1] "ï..Movie.ID"  "Movie.Title"  "Release.Year" "Runtime"      "Budget"      
+[6] "Box.Office"  
+> 
+> 
+> # ------------------------------------------------------------
+> # Try to identify the movie-name column automatically
+> # ------------------------------------------------------------
+> 
+> movie_name_column <- NULL
+> 
+> possible_movie_columns <- c(
++   "Movie.Name",
++   "Movie",
++   "Movie.Title",
++   "Title",
++   "Name"
++ )
+> 
+> for (col in possible_movie_columns) {
++   if (col %in% names(movies)) {
++     movie_name_column <- col
++     break
++   }
++ }
+> 
+> 
+> # ------------------------------------------------------------
+> # If a movie name column exists, join it
+> # ------------------------------------------------------------
+> 
+> if (!is.null(movie_name_column)) {
++   
++   movie_names <- movies %>%
++     select(
++       `Movie.ID`,
++       Movie_Name = all_of(movie_name_column)
++     )
++   
++   busiest_places_named <- busiest_places %>%
++     left_join(
++       movie_names,
++       by = "Movie.ID"
++     ) %>%
++     select(
++       `Movie.ID`,
++       Movie_Name,
++       `Place.Name`,
++       Dialogue_Lines,
++       Chapters
++     )
++   
++   print(busiest_places_named)
++   
++ } else {
++   
++   busiest_places_named <- busiest_places
++   
++ }
+Error in `select()`:
+! Can't select columns that don't exist.
+✖ Column `Movie.ID` doesn't exist.
+Run `rlang::last_trace()` to see where the error occurred.
+
+> names(movies)
+[1] "ï..Movie.ID"  "Movie.Title"  "Release.Year" "Runtime"      "Budget"      
+[6] "Box.Office"  
+> 
